@@ -19,7 +19,7 @@ locals {
 
 resource "aws_ecr_repository" "private_repo" {
   name                 = local.ecr_repo_name
-  image_tag_mutability = "IMMUTABLE"
+  image_tag_mutability = "MUTABLE"
 
   # ECR private repository block
   # (Public ECR uses aws_ecrpublic_repository — we are NOT using that)

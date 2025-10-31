@@ -1,0 +1,51 @@
+name: Build & Push to ECR
+
+on:
+  push:
+    branches: [ "main" ]
+
+env:
+  AWS_REGION: us-east-1
+  ECR_URL: ${{ secrets.ECR_URL }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+        
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+   
+    - name: Terraform Init
+      run: terraform init
+
+    - name: Terraform Plan
+      run: terraform plan
+   
+    - name: Terraform Apply
+      run: terraform apply --auto-approve
+
+    - name: Login to Amazon ECR
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build, tag, and push image to ECR
+      env:
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        echo "Pushing to: $ECR_URL"
+
+        docker build -t $ECR_URL:$IMAGE_TAG .
+        docker tag $ECR_URL:$IMAGE_TAG $ECR_URL:latest
+
+        docker push $ECR_URL:$IMAGE_TAG
+        docker push $ECR_URL:latest

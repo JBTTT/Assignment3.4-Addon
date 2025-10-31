@@ -22,7 +22,7 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-east-1
-        
+
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
    
@@ -37,6 +37,14 @@ jobs:
 
     - name: Login to Amazon ECR
       uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Debug ECR URL
+      run: |
+        echo "ECR_URL value detected: '${ECR_URL}'"
+        if [ -z "$ECR_URL" ]; then
+        echo "❌ ECR_URL secret missing or empty. Set it in GitHub Secrets."
+        exit 1
+        fi
 
     - name: Build, tag, and push image to ECR
       env:

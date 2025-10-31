@@ -32,3 +32,4 @@ resource "aws_ecr_repository" "private_repo" {
   }
 
 }
+

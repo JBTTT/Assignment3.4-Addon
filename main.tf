@@ -17,7 +17,18 @@ locals {
   ecr_repo_name = "jibin-flask-prepo-assignment3-4-addon"
 }
 
+# Try to read the repo if it exists
+data "aws_ecr_repository" "existing" {
+  repository_name = local.ecr_repo_name
+
+  # If not found, ignore errors instead of failing
+  lifecycle {
+    ignore_errors = true
+  }
+}
+
 resource "aws_ecr_repository" "private_repo" {
+  count                = data.aws_ecr_repository.existing.repository_url == "" ? 1 : 0
   name                 = local.ecr_repo_name
   image_tag_mutability = "MUTABLE"
 
@@ -30,6 +41,11 @@ resource "aws_ecr_repository" "private_repo" {
   image_scanning_configuration {
     scan_on_push = true
   }
-
 }
 
+# Output whichever repo exists (terraform-created or existing)
+output "ecr_repository_url" {
+  value = data.aws_ecr_repository.existing.repository_url != "" ?
+          data.aws_ecr_repository.existing.repository_url :
+          aws_ecr_repository.this[0].repository_url
+}

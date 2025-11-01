@@ -18,8 +18,8 @@ locals {
 }
 
 # Try to read the repo if it exists
-#data "aws_ecr_repository" "existing" {
-#  repository_name = local.ecr_repo_name
+data "aws_ecr_repository" "existing" {
+  repository_name = local.ecr_repo_name
 
   # If not found, ignore errors instead of failing
 # lifecycle {

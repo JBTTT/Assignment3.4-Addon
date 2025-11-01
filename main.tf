@@ -17,19 +17,8 @@ locals {
   ecr_repo_name = "jibin-flask-prepo-assignment3-4-addon"
 }
 
-# Try to read the repo if it exists
-data "aws_ecr_repository" "existing" {
-  repository_name = local.ecr_repo_name
-}
-  # If not found, ignore errors instead of failing
-# lifecycle {
-#    ignore_errors = true
-#  }
-#
-
 resource "aws_ecr_repository" "private_repo" {
-  count                = data.aws_ecr_repository.existing.repository_url == "" ? 1 : 0
-  name                 = local.ecr_repo_name
+    name                 = local.ecr_repo_name
   image_tag_mutability = "MUTABLE"
 
   # ECR private repository block

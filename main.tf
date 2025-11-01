@@ -18,14 +18,14 @@ locals {
 }
 
 # Try to read the repo if it exists
-data "aws_ecr_repository" "existing" {
-  repository_name = local.ecr_repo_name
+#data "aws_ecr_repository" "existing" {
+#  repository_name = local.ecr_repo_name
 
   # If not found, ignore errors instead of failing
-  lifecycle {
-    ignore_errors = true
-  }
-}
+# lifecycle {
+#    ignore_errors = true
+#  }
+#}
 
 resource "aws_ecr_repository" "private_repo" {
   count                = data.aws_ecr_repository.existing.repository_url == "" ? 1 : 0
@@ -44,8 +44,8 @@ resource "aws_ecr_repository" "private_repo" {
 }
 
 # Output whichever repo exists (terraform-created or existing)
-output "ecr_repository_url" {
-  value = data.aws_ecr_repository.existing.repository_url != "" ?
-          data.aws_ecr_repository.existing.repository_url :
-          aws_ecr_repository.this[0].repository_url
-}
+# output "ecr_repository_url" {
+#  value = data.aws_ecr_repository.existing.repository_url != "" ?
+#          data.aws_ecr_repository.existing.repository_url :
+#          aws_ecr_repository.this[0].repository_url
+#}

@@ -14,7 +14,8 @@ provider "aws" {
 }
 
 locals {
-  ecr_repo_name = "jibin-flask-prepo-assignment3-4-addon"
+  ecr_repo_name = "grp1-ecr"
+#  ecr_repo_name = "jibin-flask-prepo-assignment3-4-addon"
 }
 
 resource "aws_ecr_repository" "private_repo" {
